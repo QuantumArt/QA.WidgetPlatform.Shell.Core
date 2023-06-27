@@ -28,10 +28,11 @@ export const getPage = (url: string, structure: undefined | SiteNode): undefined
     } else {
       // Мы не нашли в структуре нужную страницу
       // Выходим из загрузки
-      return;
+      //return;
+      break;
     }
   }
   //^^^^^^^^
-  
+
   return page;
 };

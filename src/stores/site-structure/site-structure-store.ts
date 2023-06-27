@@ -20,10 +20,14 @@ export class SiteStructureStore {
     return this._routes;
   }
 
-  constructor(private readonly wpApi: WPApiStore,
-              private readonly appSetting: IAppSettingsShell,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              private readonly page: FunctionComponent<any>) {}
+  constructor(
+    private readonly wpApi: WPApiStore,
+    private readonly appSetting: IAppSettingsShell,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private readonly page: FunctionComponent<any>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private readonly notFoundPage: FunctionComponent<any>,
+  ) {}
 
   public init = async (): Promise<void> => {
     try {
@@ -34,13 +38,21 @@ export class SiteStructureStore {
       //Создаем справочник роутов
       const routes: RouteObject[] = [];
       routes.push(this.getRouteObject('/', response));
+
       //Детей складываем в единый список роутов
       for (const child of response.children ?? []) {
         this.fillSiteStructure(routes, '', child);
       }
-      this._routes = routes;
       //^^^^^^^^^^
 
+      //Добавляем 404 страницу
+      routes.push({
+        path: '*',
+        element: React.createElement(this.notFoundPage),
+      });
+      //^^^^^^^^^^
+
+      this._routes = routes;
       this._isInit = true;
     } catch (ex) {
       console.error(ex);
@@ -59,7 +71,7 @@ export class SiteStructureStore {
   private getRouteObject = (path: string, node: SiteNode) => {
     const route: RouteObject = {};
     route.id = node.id?.toString();
-    route.path = path;
+    route.path = path + '/*';
 
     const fcdm =
       this.appSetting.widgetsPlatform.forcedConfigurationOfDynamicModules?.[node.nodeType!];
@@ -72,7 +84,7 @@ export class SiteStructureStore {
         moduleName: fcdm?.moduleName ?? node.frontModuleName ?? '',
         componentAlias: node.nodeType!,
       },
-    });
+    } as RouteObject);
     return route;
   };
 }

@@ -13,4 +13,5 @@ export * from './stores/wp-api/wp-api-store';
 export * from './utilities/get-breadcrumbs';
 export * from './utilities/get-page';
 export * from './utilities/get-site-map';
+export * from './utilities/get-tail-url';
 export * from './utilities/get-zone';

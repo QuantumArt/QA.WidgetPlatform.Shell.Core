@@ -35,6 +35,7 @@ export const getSiteMap = (
       isvisible: node.details?.isvisible.value,
       children:
         node.children
+          ?.filter(a => a.details?.isvisible)
           ?.sort((c1, c2) => {
             const v1 = c1.details?.indexorder?.value ?? 0;
             const v2 = c2.details?.indexorder?.value ?? 0;
