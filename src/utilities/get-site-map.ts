@@ -4,7 +4,6 @@ export interface PageNode {
   title: string;
   link: string;
   children: PageNode[];
-  isvisible: true;
 }
 
 export const getSiteMap = (
@@ -32,10 +31,9 @@ export const getSiteMap = (
     return {
       title: isRootPage ? homeTitle : node.details?.title?.value,
       link: path,
-      isvisible: node.details?.isvisible.value,
       children:
         node.children
-          ?.filter(a => a.details?.isvisible)
+          ?.filter(a => a.details?.isvisible.value)
           ?.sort((c1, c2) => {
             const v1 = c1.details?.indexorder?.value ?? 0;
             const v2 = c2.details?.indexorder?.value ?? 0;

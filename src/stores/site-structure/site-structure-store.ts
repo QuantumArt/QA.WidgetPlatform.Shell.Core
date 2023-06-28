@@ -61,7 +61,12 @@ export class SiteStructureStore {
 
   private fillSiteStructure = (routes: RouteObject[], prefixPath: string, node: SiteNode): void => {
     const path = !!node.alias ? `${prefixPath}/${node.alias}` : prefixPath;
-    routes.push(this.getRouteObject(path, node));
+    let tempPath = path;
+    //Костыль для ререндеринга при одинаковых элементах на вложенных роутерах
+    for (let i = 0; i < 10; i++) {
+      routes.push(this.getRouteObject(tempPath, node));
+      tempPath += `/:t${i}`;
+    }
     //Детей складываем в единый список роутов
     for (const child of node.children ?? []) {
       this.fillSiteStructure(routes, path, child);
@@ -71,7 +76,7 @@ export class SiteStructureStore {
   private getRouteObject = (path: string, node: SiteNode) => {
     const route: RouteObject = {};
     route.id = node.id?.toString();
-    route.path = path + '/*';
+    route.path = path;
 
     const fcdm =
       this.appSetting.widgetsPlatform.forcedConfigurationOfDynamicModules?.[node.nodeType!];
@@ -84,7 +89,7 @@ export class SiteStructureStore {
         moduleName: fcdm?.moduleName ?? node.frontModuleName ?? '',
         componentAlias: node.nodeType!,
       },
-    } as RouteObject);
+    });
     return route;
   };
 }
