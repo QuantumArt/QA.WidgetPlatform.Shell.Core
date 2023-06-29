@@ -27,7 +27,10 @@ export class SiteStructureStore {
     private readonly page: FunctionComponent<any>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly notFoundPage: FunctionComponent<any>,
-  ) {}
+    private maxDynamicPathLevel: number = 1,
+  ) {
+    this.maxDynamicPathLevel = Math.max(maxDynamicPathLevel, 1);
+  }
 
   public init = async (): Promise<void> => {
     try {
@@ -63,7 +66,7 @@ export class SiteStructureStore {
     const path = !!node.alias ? `${prefixPath}/${node.alias}` : prefixPath;
     let tempPath = path;
     //Костыль для ререндеринга при одинаковых элементах на вложенных роутерах
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i <= this.maxDynamicPathLevel; i++) {
       routes.push(this.getRouteObject(tempPath, node));
       tempPath += `/:t${i}`;
     }
