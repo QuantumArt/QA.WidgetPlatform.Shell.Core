@@ -27,9 +27,9 @@ export class SiteStructureStore {
     private readonly page: FunctionComponent<any>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly notFoundPage: FunctionComponent<any>,
-    private maxDynamicPathLevel: number = 1,
+    private maxDynamicPathLevel: number = 0,
   ) {
-    this.maxDynamicPathLevel = Math.max(maxDynamicPathLevel, 1);
+    this.maxDynamicPathLevel = Math.max(maxDynamicPathLevel, 0);
   }
 
   public init = async (): Promise<void> => {

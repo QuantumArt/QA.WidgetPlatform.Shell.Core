@@ -8,6 +8,10 @@ export const getPage = (url: string, structure: undefined | SiteNode): undefined
     .split('/')
     .filter(s => !!s);
 
+  if (pageРierarchy.length === 0) {
+    return structure;
+  }
+
   let level = structure?.children ?? [];
   let page: undefined | SiteNode;
 
