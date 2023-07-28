@@ -1,10 +1,19 @@
 import React from 'react';
-import { Api, SiteNode, SiteNodeDetails, WidgetDetails } from '../../api-clients/widget-platform-api';
+import {
+  Api,
+  RequestParams,
+  SiteNode,
+  SiteNodeDetails,
+  WidgetDetails,
+} from '../../api-clients/widget-platform-api';
 import { IAppSettingsShell } from '../../app-settings-shell/app-settings-shell-models';
 
 export class WPApiStore {
   private readonly api: Api<unknown>;
-  constructor(private readonly appSettings: IAppSettingsShell) {
+  constructor(
+    private readonly appSettings: IAppSettingsShell,
+    private readonly baseParam?: RequestParams,
+  ) {
     this.api = new Api({
       baseUrl: appSettings.widgetsPlatform.apiUrl,
     });
@@ -12,21 +21,28 @@ export class WPApiStore {
 
   public structure = (fields?: string[]): Promise<SiteNode> =>
     this.api.site
-      .structureList({
-        dnsName: this.appSettings.widgetsPlatform.dnsName,
-        fields: fields,
-        fillDefinitionDetails: true,
-      })
+      .structureList(
+        {
+          dnsName: this.appSettings.widgetsPlatform.dnsName,
+          fields: fields,
+          fillDefinitionDetails: true,
+        },
+        this.baseParam,
+      )
       .then(response => response.data);
 
   public node = (nodeId: number): Promise<SiteNodeDetails> =>
-    this.api.site.nodeDetail(nodeId).then(response => response.data);
+    this.api.site.nodeDetail(nodeId, this.baseParam).then(response => response.data);
 
   public widgets = (nodeId: number): Promise<Record<string, WidgetDetails[]>> =>
     this.api.site
-      .widgetsDetail(nodeId, {
-        fillDefinitionDetails: true,
-      })
+      .widgetsDetail(
+        nodeId,
+        {
+          fillDefinitionDetails: true,
+        },
+        this.baseParam,
+      )
       .then(response => response.data);
 }
 
