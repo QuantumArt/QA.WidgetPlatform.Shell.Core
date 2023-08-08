@@ -1,5 +1,13 @@
 import { SiteNode } from '../api-clients/widget-platform-api';
 
+const removeQuery = (link: string) => {
+  const indexQuestion = link.indexOf('?');
+  if (indexQuestion >= 0) {
+    return link.substring(0, indexQuestion);
+  }
+  return link;
+};
+
 export const getTailUrl = (
   pageId: number,
   publicPath: string,
@@ -8,6 +16,7 @@ export const getTailUrl = (
   href: string,
 ): string => {
   let path = publicPath ?? '/';
+  href = removeQuery(href);
 
   if (!structure) {
     return href.substring(path.length);
