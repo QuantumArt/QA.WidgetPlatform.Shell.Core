@@ -65,6 +65,8 @@ export interface WidgetDetails {
   deniedUrlPatterns?: string[] | null;
   /** Дочерние виджеты, сгруппированные по зонам */
   childWidgets?: Record<string, WidgetDetails[]>;
+  /** @format int32 */
+  sortOrder?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -255,7 +257,7 @@ export class HttpClient<SecurityDataType = unknown> {
           ...(requestParams.headers || {}),
           ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
         },
-        signal: cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal,
+        signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
         body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
       },
     ).then(async response => {
