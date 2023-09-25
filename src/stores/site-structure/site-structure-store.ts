@@ -32,9 +32,12 @@ export class SiteStructureStore {
     this.maxDynamicPathLevel = Math.max(maxDynamicPathLevel, 0);
   }
 
-  public init = async (): Promise<void> => {
+  public init = async (params?: { additionalFields?: string[] }): Promise<void> => {
     try {
-      const response = await this.wpApi.structure(['IsVisible', 'IndexOrder', 'Title']);
+      const response = await this.wpApi.structure([
+        ...['IsVisible', 'IndexOrder', 'Title'],
+        ...(params?.additionalFields ?? []),
+      ]);
 
       this._structure = response;
 
