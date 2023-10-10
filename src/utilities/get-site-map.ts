@@ -8,10 +8,10 @@ export interface PageNode {
 }
 
 type convertingUrlHandler = (
-  path: string,
+  link: string,
   node: SiteNode,
 ) => {
-  path: string;
+  link: string;
   additionalData?: unknown;
 };
 
@@ -32,12 +32,13 @@ export const getSiteMap = (
 
   const getLevel = (basePath: string, node: SiteNode, level = maxDeep): PageNode => {
     const isRootPage = node.id === structureId;
-    let path = isRootPage || level === maxDeep ? basePath : `${basePath}${node.alias}/`;
+    const path = isRootPage || level === maxDeep ? basePath : `${basePath}${node.alias}/`;
     let additionalData: unknown | undefined = undefined;
 
+    let link = path;
     if (!!convertingUrl) {
       const urlParam = convertingUrl(path, node);
-      path = urlParam.path;
+      link = urlParam.link;
       additionalData = urlParam.additionalData;
     }
 
@@ -47,7 +48,7 @@ export const getSiteMap = (
 
     return {
       title: isRootPage ? homeTitle : node.details?.title?.value,
-      link: path,
+      link,
       additionalData,
       children:
         node.children

@@ -26,6 +26,6 @@ export interface IComponentInfo {
 export interface IAppSettingsShell {
   readonly widgetsPlatform: IWidgetsPlatform;
   readonly useDynamicModules?: boolean;
-  readonly publicPath: string;
+  readonly baseURL: string;
   readonly ssr?: ISSRSettings;
 }
