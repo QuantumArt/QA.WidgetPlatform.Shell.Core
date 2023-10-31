@@ -15,20 +15,21 @@ type convertingUrlHandler = (
   additionalData?: unknown;
 };
 
-export const getSiteMap = (
-  maxDeepOrigin: number | undefined,
-  homeTitle: string,
-  publicPath: string,
-  structure: undefined | SiteNode,
-  convertingUrl?: convertingUrlHandler,
-): PageNode[] => {
-  if (!structure?.children) {
+export const getSiteMap = (param: {
+  maxDeepOrigin?: number;
+  homeTitle: string;
+  baseURL: string;
+  structure: undefined | SiteNode;
+  addHiddenPages?: boolean;
+  convertingUrl?: convertingUrlHandler;
+}): PageNode[] => {
+  if (!param.structure?.children) {
     return [];
   }
 
-  const maxDeep = maxDeepOrigin ?? 5;
-  const structureId = structure;
-  const path = publicPath ?? '/';
+  const maxDeep = param.maxDeepOrigin ?? 5;
+  const structureId = param.structure;
+  const path = param.baseURL ?? '/';
 
   const getLevel = (basePath: string, node: SiteNode, level = maxDeep): PageNode => {
     const isRootPage = node.id === structureId;
@@ -36,8 +37,8 @@ export const getSiteMap = (
     let additionalData: unknown | undefined = undefined;
 
     let link = path;
-    if (!!convertingUrl) {
-      const urlParam = convertingUrl(path, node);
+    if (!!param.convertingUrl) {
+      const urlParam = param.convertingUrl(path, node);
       link = urlParam.link;
       additionalData = urlParam.additionalData;
     }
@@ -47,12 +48,12 @@ export const getSiteMap = (
     }
 
     return {
-      title: isRootPage ? homeTitle : node.details?.title?.value,
+      title: isRootPage ? param.homeTitle : node.details?.title?.value,
       link,
       additionalData,
       children:
         node.children
-          ?.filter(a => a.details?.isvisible.value)
+          ?.filter(a => !!param.addHiddenPages || a.details?.isvisible.value)
           ?.sort((c1, c2) => {
             const v1 = c1.details?.indexorder?.value ?? 0;
             const v2 = c2.details?.indexorder?.value ?? 0;
@@ -62,5 +63,5 @@ export const getSiteMap = (
     } as PageNode;
   };
 
-  return getLevel(path, structure)?.children ?? [];
+  return getLevel(path, param.structure)?.children ?? [];
 };
