@@ -35,7 +35,7 @@ export class SiteStructureStore {
   public init = async (params?: { additionalFields?: string[] }): Promise<void> => {
     try {
       const response = await this.wpApi.structure([
-        ...['IsVisible', 'IndexOrder', 'Title'],
+        ...['IsVisible', 'IsInSiteMap', 'IndexOrder', 'Title'],
         ...(params?.additionalFields ?? []),
       ]);
 

@@ -7,6 +7,13 @@ export interface PageNode {
   children: PageNode[];
 }
 
+export enum SiteMapFilter {
+  None = 0x0,
+  SiteMap = 0x1,
+  Navigation = 0x2,
+  All = SiteMap | Navigation,
+}
+
 type convertingUrlHandler = (
   link: string,
   node: SiteNode,
@@ -20,7 +27,7 @@ export const getSiteMap = (param: {
   homeTitle: string;
   baseURL: string;
   structure: undefined | SiteNode;
-  addHiddenPages?: boolean;
+  filter?: SiteMapFilter;
   convertingUrl?: convertingUrlHandler;
 }): PageNode[] => {
   if (!param.structure?.children) {
@@ -47,13 +54,27 @@ export const getSiteMap = (param: {
       return;
     }
 
+    const filter = (siteNode: SiteNode) => {
+      let allowed = true;
+
+      if (!!(param.filter & SiteMapFilter.Navigation)) {
+        allowed = allowed && siteNode.details?.isvisible.value;
+      }
+
+      if (!!(param.filter & SiteMapFilter.SiteMap)) {
+        allowed = allowed && siteNode.details?.isinsitemap.value;
+      }
+
+      return allowed;
+    };
+
     return {
       title: isRootPage ? param.homeTitle : node.details?.title?.value,
       link,
       additionalData,
       children:
         node.children
-          ?.filter(a => !!param.addHiddenPages || a.details?.isvisible.value)
+          ?.filter(filter)
           ?.sort((c1, c2) => {
             const v1 = c1.details?.indexorder?.value ?? 0;
             const v2 = c2.details?.indexorder?.value ?? 0;
