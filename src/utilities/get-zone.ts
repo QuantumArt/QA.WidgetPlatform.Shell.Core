@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { SiteNode, WidgetDetails } from '../api-clients/widget-platform-api';
 import { WPApiStore } from '../stores/wp-api/wp-api-store';
+import { ZoneTypes } from './get-zone-info';
 
 export const getZones = async (
   url: string,
@@ -22,19 +23,19 @@ export const getZones = async (
       //Если рендерим не главную, но, НА ТЕКУЩЕЙ ИТЕРАЦИИ, рендерим ИМЕННО главную, то туда попадает только виджеты глобальных зон или рекурсивные
       zonesName = Object.keys(zonesWithWidgets).filter(
         zoneName =>
-          zoneName.startsWith('Global') ||
-          zoneName.startsWith('Site') ||
-          zoneName.startsWith('Recursive'),
+          zoneName.startsWith(ZoneTypes.Global) ||
+          zoneName.startsWith(ZoneTypes.Site) ||
+          zoneName.startsWith(ZoneTypes.Recursive),
       );
     } else if (pageId === nodeId) {
       //Если рендерим не главную, но, НА ТЕКУЩЕЙ ИТЕРАЦИИ, рендерим ИМЕННО нашу страницу, то туда попадает все виджеты кроме глобальных зон
       zonesName = Object.keys(zonesWithWidgets).filter(
-        zoneName => !(zoneName.startsWith('Global') || zoneName.startsWith('Site')),
+        zoneName => !(zoneName.startsWith(ZoneTypes.Global) || zoneName.startsWith(ZoneTypes.Site)),
       );
     } else {
       //Если рендерим не главную, и, НА ТЕКУЩЕЙ ИТЕРАЦИИ, рендерим верхнестоящую страницу, то туда попадают только виджеты рекурсивных зон
       zonesName = Object.keys(zonesWithWidgets).filter(zoneName =>
-        zoneName.startsWith('Recursive'),
+        zoneName.startsWith(ZoneTypes.Recursive),
       );
     }
     for (const zoneName of zonesName) {

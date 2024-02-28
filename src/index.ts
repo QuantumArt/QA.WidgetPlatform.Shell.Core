@@ -15,3 +15,4 @@ export * from './utilities/get-page';
 export * from './utilities/get-site-map';
 export * from './utilities/get-tail-url';
 export * from './utilities/get-zone';
+export * from './utilities/get-zone-info';
