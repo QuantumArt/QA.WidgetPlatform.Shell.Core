@@ -34,11 +34,12 @@ export class WPApiStore {
   public node = (nodeId: number): Promise<SiteNodeDetails> =>
     this.api.site.nodeDetail(nodeId, this.baseParam).then(response => response.data);
 
-  public widgets = (nodeId: number): Promise<Record<string, WidgetDetails[]>> =>
+  public widgets = (nodeId: number, fields?: string[]): Promise<Record<string, WidgetDetails[]>> =>
     this.api.site
       .widgetsDetail(
         nodeId,
         {
+          fields,
           fillDefinitionDetails: true,
         },
         this.baseParam,

@@ -1,6 +1,6 @@
 {
   "name": "@quantumart/qp8-widget-platform-shell-core",
-  "version": "8.0.14",
+  "version": "8.0.15",
   "description": "Данный пакет содержит основную логику для работы qp8-widget-platform-shell",
   "main": "dist/main.js",
   "module": "dist/main.js",

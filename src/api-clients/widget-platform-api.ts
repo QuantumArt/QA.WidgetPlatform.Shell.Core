@@ -48,6 +48,7 @@ export interface SiteNodeDetails {
   id?: number;
   alias?: string | null;
   nodeType?: string | null;
+  published?: boolean;
   details?: Record<string, FieldInfo>;
 }
 
@@ -57,6 +58,7 @@ export interface WidgetDetails {
   id?: number;
   alias?: string | null;
   nodeType?: string | null;
+  published?: boolean;
   details?: Record<string, FieldInfo>;
   zone?: string | null;
   frontModuleUrl?: string | null;
@@ -406,6 +408,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         t?: Record<string, string>;
         /** Список виджетных зон (если не передавать, то поиск виджетов не будет производиться для рекурсивных и глобальных зон) */
         zones?: string[];
+        /** Поля деталей к выдаче. Если пусто, то будут выведены все детали */
+        fields?: string[];
         /**
          * Заполнять дополнительные поля из дефинишена
          * @default false

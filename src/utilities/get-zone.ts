@@ -9,12 +9,13 @@ export const getZones = async (
   wpApi: WPApiStore,
   structure: undefined | SiteNode,
   pageHierarchy: { [nodeId: number]: number[] },
+  fields: string[]
 ): Promise<Record<string, WidgetDetails[]>> => {
   // Собираем рекурсивно виджет зоны по иерархии страниц
   const zones: Record<string, WidgetDetails[]> = {};
 
   for (const nodeId of pageHierarchy[pageId]) {
-    const zonesWithWidgets = await wpApi.widgets(nodeId);
+    const zonesWithWidgets = await wpApi.widgets(nodeId, fields);
     let zonesName: string[] = [];
     if (pageId === structure?.id) {
       //Если рендерим ИМЕННО главную, то туда попадает все виджиты
